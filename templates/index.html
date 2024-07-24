@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Real-time Updates Example</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+            socket.on('connect', function() {
+                var alertDiv = document.getElementById('alert');
+                alertDiv.innerHTML = '<div class="alert alert-success" role="alert">Socket connected</div>';
+            });
+
+            socket.on('server_update', function(msg) {
+                var updatesDiv = document.getElementById('updates');
+                var updateItem = document.createElement('p');
+                updateItem.textContent = msg.data;
+                updatesDiv.appendChild(updateItem);
+            });
+
+            document.getElementById('startButton').addEventListener('click', function() {
+                socket.emit('start_updates');
+            });
+        });
+    </script>
+</head>
+<body>
+    <div id="alert"></div>
+    <div class="container mt-4">
+        <h1>Real-time Updates Example</h1>
+        <button id="startButton" class="btn btn-primary">Start Updates</button>
+        <div id="updates" class="mt-4"></div>
+    </div>
+</body>
+</html>
